@@ -70,3 +70,16 @@ init:
 cho:
 	chown -R www-data app/storage
 	docker compose exec app chmod -R a+w /var/www/bootstrap/cache
+
+controller:
+	@read -p "Controller name (without 'Controller' suffix): " name; \
+	docker compose exec app php artisan make:apicontroller "Api/V1/$${name}Controller" && \
+	make api
+
+model:
+	@read -p "Model name: " name; \
+	docker compose exec app php artisan make:schemamodel "$${name}" -mfs && \
+	docker compose exec app php artisan make:model-test "$${name}"
+
+test:
+	docker compose exec app php artisan test
